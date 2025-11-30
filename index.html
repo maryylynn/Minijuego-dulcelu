@@ -1,242 +1,265 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Alfajor Lú — Kawaii Mágico ✨🌈</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MiniJuego Dulce Lú</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #0b0b0b, #25001f);
+      color: #fff;
+      text-align: center;
+    }
+    h1 {
+      margin-top: 20px;
+      text-shadow: 0 0 10px #ff66c4;
+    }
+    #game-wrap{max-width:420px;margin:0 auto;padding:10px}
+    #game {
+      margin: 20px auto;
+      width: 400px;
+      height: 400px;
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(6px);
+      border-radius: 25px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 0 30px #ff3fa8;
+      touch-action: manipulation;
+    }
 
-<style>
-  body {
-    margin: 0;
-    font-family: 'Poppins', sans-serif;
-    background: linear-gradient(#fff7fc, #ffeaff);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 30px;
-    color: #5f4a59;
-  }
+    #alfajor {
+      width: 90px;
+      height: 90px;
+      background: radial-gradient(circle, #6e3f22 40%, #4e2d12 100%);
+      border-radius: 50%;
+      position: absolute;
+      cursor: pointer;
+      box-shadow: 0 0 15px #ff88dd;
+      transition: transform 0.15s;
+      /* ensure there is a default left/top so parseInt works */
+      left: 0px;
+      top: 0px;
+      display:flex;align-items:center;justify-content:center;font-weight:bold
+    }
 
-  h1 {
-    font-weight: 800;
-    color: #ff77c8;
-    font-size: 34px;
-    margin-bottom: 10px;
-    text-shadow: 0px 2px 4px rgba(255, 150, 225, 0.6);
-  }
+    #score, #timer {
+      font-size: 22px;
+      margin-top: 10px;
+      text-shadow: 0 0 6px #ff5dc8;
+    }
 
-  #juego {
-    display: flex;
-    gap: 25px;
-    margin-top: 20px;
-    width: 100%;
-    max-width: 900px;
-  }
+    /* Partículas */
+    .particle {
+      position: absolute;
+      font-size: 20px;
+      animation: fly 0.8s ease-out forwards;
+      pointer-events: none;
+      user-select: none;
+    }
 
-  /* Panel */
-  #opciones {
-    width: 240px;
-    background: white;
-    border-radius: 25px;
-    padding: 20px;
-    border: 4px solid #ffd7ef;
-    box-shadow: 0 8px 20px rgba(255, 170, 220, 0.25);
-  }
+    @keyframes fly {
+      0% { opacity: 1; transform: translateY(0) scale(1); }
+      100% { opacity: 0; transform: translateY(-50px) scale(1.5); }
+    }
 
-  #opciones h3 {
-    text-align: center;
-    color: #ff6bb0;
-    margin-bottom: 15px;
-  }
-
-  #opciones button {
-    width: 100%;
-    padding: 12px;
-    border-radius: 20px;
-    border: none;
-    background: #ffd7ef;
-    cursor: pointer;
-    font-size: 16px;
-    font-weight: 600;
-    margin: 10px 0;
-    color: #b45c89;
-    box-shadow: 0 5px 12px rgba(255, 150, 200, 0.3);
-    transition: 0.2s;
-  }
-
-  #opciones button:hover {
-    background: #ffbde5;
-    transform: translateY(-2px);
-  }
-
-  /* Alfajor Section */
-  #alfajor-area {
-    flex: 1;
-    background: white;
-    border-radius: 30px;
-    padding: 20px;
-    border: 4px solid #ffd7ef;
-    box-shadow: 0 8px 20px rgba(255, 150, 200, 0.2);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    position: relative;
-    overflow: visible;
-  }
-
-  #alfajor {
-    width: 260px;
-    height: 260px;
-    border-radius: 50%;
-    margin-top: 15px;
-    position: relative;
-    transition: 0.4s ease;
-    border: 22px solid #ffd4e6;
-    background: linear-gradient(#fff0fa, #ffd7ef);
-    background-size: cover;
-    background-position: center;
-  }
-
-  /* Carita */
-  .cara {
-    position: absolute;
-    bottom: 45px;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 48px;
-    color: #5f4a59;
-    pointer-events: none;
-  }
-
-  /* Efectos mágicos */
-  @keyframes sparkleFloat {
-    0% { transform: translateY(0) scale(1); opacity: 1; }
-    100% { transform: translateY(-25px) scale(1.2); opacity: 0; }
-  }
-
-  .sparkle {
-    position: absolute;
-    font-size: 22px;
-    color: #ffbde9;
-    animation: sparkleFloat 1.8s linear infinite;
-    pointer-events: none;
-  }
-
-  /* Descargar */
-  #descargar {
-    margin-top: 22px;
-    padding: 14px 22px;
-    border: none;
-    background: #ff77c8;
-    color: white;
-    font-size: 17px;
-    border-radius: 25px;
-    cursor: pointer;
-    box-shadow: 0 5px 12px rgba(255, 120, 200, 0.3);
-    transition: 0.2s;
-  }
-
-  #descargar:hover {
-    background: #e85cad;
-    transform: translateY(-2px);
-  }
-
-</style>
+    /* Buttons */
+    #controls{display:flex;gap:10px;justify-content:center;margin-top:10px}
+    button{padding:8px 12px;border-radius:10px;border:none;cursor:pointer}
+  </style>
 </head>
-
 <body>
+  <div id="game-wrap">
+    <h1>🍫 Mini Juego — Atrapa el Alfajor Dulce Lú ✨</h1>
+    <p>Toca el alfajor antes de que desaparezca. ¡Corre!</p>
 
-<h1>✨🌈 Decora tu Alfajor Kawaii Mágico 🌙💖</h1>
+    <div id="timer">⏱ Tiempo: 30</div>
+    <div id="score">Puntaje: 0</div>
 
-<div id="juego">
-
-  <div id="opciones">
-    <h3>Opciones Mágicas</h3>
-    <button onclick="cambiarRelleno()">Relleno</button>
-    <button onclick="cambiarCobertura()">Cobertura</button>
-    <button onclick="cambiarDecoracion()">Decoración</button>
-    <button onclick="cambiarCarita()">Carita Mágica</button>
-  </div>
-
-  <div id="alfajor-area">
-    <div id="alfajor">
-      <div class="cara" id="cara">✧ UwU ✧</div>
+    <div id="game">
+      <div id="alfajor" aria-label="alfajor"> </div>
     </div>
-    <button id="descargar" onclick="descargarImagen()">Descargar Imagen</button>
+
+    <div id="controls">
+      <button id="restart">Reiniciar</button>
+      <button id="fullscreen">Pantalla completa</button>
+    </div>
   </div>
 
-</div>
+  <script>
+    // Elements
+    const alfajor = document.getElementById('alfajor');
+    const scoreText = document.getElementById('score');
+    const timerText = document.getElementById('timer');
+    const game = document.getElementById('game');
+    const restartBtn = document.getElementById('restart');
+    const fsBtn = document.getElementById('fullscreen');
 
-<script>
-// Alfajor
-const alfajor = document.getElementById("alfajor");
-const cara = document.getElementById("cara");
+    // Game state
+    let score = 0;
+    let time = 30;
+    let baseSpeed = 900; // ms between moves
+    let minSpeed = 300;
+    let moveTimeoutId = null;
+    let timerIntervalId = null;
+    let gameRunning = false;
 
-// Arrays mágicos
-const rellenos = ["#ffd4e6", "#ffe7da", "#d8e7ff"];
-const coberturas = [
-  "linear-gradient(#fff0fa, #ffd7ef)",
-  "linear-gradient(#fff5dd, #ffe1b6)",
-  "linear-gradient(#f0f8ff, #d4ecff)"
-];
-const decoraciones = [
-  "none",
-  "url('https://i.imgur.com/A3n8FQs.png')", 
-  "url('https://i.imgur.com/CHlZaLq.png')", 
-  "url('https://i.imgur.com/fpi1weQ.png')"
-];
+    // Audio: some environments (sandbox) may disallow creating/playing audio from external URLs.
+    // We'll attempt to create Audio but wrap in try/catch and provide a safe no-op fallback.
+    let sounds = { pop: null };
+    try {
+      // try to create audio, but if it fails we'll set play() to a noop
+      const audio = new Audio('https://actions.google.com/sounds/v1/cartoon/pop.ogg');
+      // don't auto-play; only play on user interaction
+      sounds.pop = audio;
+    } catch (err) {
+      sounds.pop = { play: () => {} };
+    }
 
-const caritas = [
-  "✧ UwU ✧",
-  "✦ OwO ✦",
-  "✨ >w< ✨",
-  "🌙 ^w^ 🌙",
-  "⭐ •ᴗ• ⭐",
-  "💖 (´｡• ᵕ •｡`) 💖"
-];
+    // Utility: get random position inside game for alfajor (keeps it fully visible)
+    function randomPosition() {
+      const gw = game.clientWidth;
+      const gh = game.clientHeight;
+      const aw = alfajor.clientWidth;
+      const ah = alfajor.clientHeight;
+      const x = Math.max(0, Math.random() * (gw - aw));
+      const y = Math.max(0, Math.random() * (gh - ah));
+      return { x, y };
+    }
 
-let iR = 0, iC = 0, iD = 0, iFace = 0;
+    // Move alfajor and schedule next move according to current speed (depends on score)
+    function scheduleNextMove() {
+      // clear previous timeout if exists
+      if (moveTimeoutId) clearTimeout(moveTimeoutId);
 
-// Actualizar
-function actualizar() {
-  alfajor.style.background = coberturas[iC];
-  alfajor.style.border = `22px solid ${rellenos[iR]}`;
-  alfajor.style.backgroundImage = decoraciones[iD];
-  cara.textContent = caritas[iFace];
-}
+      // compute current speed: faster as score increases
+      const speed = Math.max(minSpeed, baseSpeed - Math.floor(score / 5) * 50);
 
-// Cambios
-function cambiarRelleno(){ iR = (iR + 1) % rellenos.length; actualizar(); }
-function cambiarCobertura(){ iC = (iC + 1) % coberturas.length; actualizar(); }
-function cambiarDecoracion(){ iD = (iD + 1) % decoraciones.length; actualizar(); }
-function cambiarCarita(){ iFace = (iFace + 1) % caritas.length; actualizar(); }
+      moveTimeoutId = setTimeout(() => {
+        moverAlfajor();
+        // schedule again
+        scheduleNextMove();
+      }, speed);
+    }
 
-// Sparkles mágicos
-function crearSparkle() {
-  const s = document.createElement("div");
-  s.className = "sparkle";
-  s.textContent = "✦";
-  s.style.left = `${Math.random() * 240 + 10}px`;
-  s.style.top = `${Math.random() * 240 + 10}px`;
-  alfajor.appendChild(s);
-  setTimeout(() => s.remove(), 1800);
-}
-setInterval(crearSparkle, 500);
+    function moverAlfajor() {
+      const pos = randomPosition();
+      alfajor.style.left = pos.x + 'px';
+      alfajor.style.top = pos.y + 'px';
+    }
 
-// Descargar
-function descargarImagen() {
-  html2canvas(alfajor).then(canvas => {
-    const link = document.createElement("a");
-    link.download = "alfajor-kawaii-magico.png";
-    link.href = canvas.toDataURL();
-    link.click();
-  });
-}
+    // Create particles at absolute coordinates (relative to game container)
+    function crearParticulas(absX, absY) {
+      for (let i = 0; i < 6; i++) {
+        const p = document.createElement('div');
+        p.classList.add('particle');
+        p.textContent = ['✨', '★', '❤'][Math.floor(Math.random()*3)];
+        p.style.left = (absX + (Math.random()*20 - 10)) + 'px';
+        p.style.top = (absY + (Math.random()*20 - 10)) + 'px';
+        p.style.color = ['#ff82d9', '#ffcae9', '#ff4fa7'][Math.floor(Math.random()*3)];
+        game.appendChild(p);
+        setTimeout(() => p.remove(), 900);
+      }
+    }
 
-actualizar();
-</script>
+    // When alfajor is clicked/tapped
+    function onCatch(e) {
+      // increase score
+      score++;
+      scoreText.textContent = 'Puntaje: ' + score;
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+      // visual feedback
+      alfajor.style.transform = 'scale(1.15)';
+      setTimeout(() => (alfajor.style.transform = 'scale(1)'), 120);
 
+      // try to play sound safely
+      try { if (sounds.pop && typeof sounds.pop.play === 'function') sounds.pop.play(); } catch(e) {}
+
+      // compute particle position: use bounding rect of alfajor relative to game
+      const alfRect = alfajor.getBoundingClientRect();
+      const gameRect = game.getBoundingClientRect();
+      const absX = alfRect.left - gameRect.left + alfRect.width / 2 - 10;
+      const absY = alfRect.top - gameRect.top + alfRect.height / 2 - 10;
+      crearParticulas(absX, absY);
+
+      // immediately move the alfajor and reschedule moves (speed will adapt automatically)
+      moverAlfajor();
+    }
+
+    // Timer logic
+    function startTimer() {
+      if (timerIntervalId) clearInterval(timerIntervalId);
+      timerIntervalId = setInterval(() => {
+        time--;
+        timerText.textContent = '⏱ Tiempo: ' + time;
+        if (time <= 0) {
+          endGame();
+        }
+      }, 1000);
+    }
+
+    function startGame() {
+      // reset state
+      score = 0;
+      time = 30;
+      scoreText.textContent = 'Puntaje: ' + score;
+      timerText.textContent = '⏱ Tiempo: ' + time;
+      gameRunning = true;
+      alfajor.style.display = '';
+
+      // move once immediately and then schedule
+      moverAlfajor();
+      scheduleNextMove();
+      startTimer();
+    }
+
+    function endGame() {
+      gameRunning = false;
+      if (moveTimeoutId) clearTimeout(moveTimeoutId);
+      if (timerIntervalId) clearInterval(timerIntervalId);
+      alfajor.style.display = 'none';
+      setTimeout(() => alert('🎉 Fin del juego! Puntaje final: ' + score), 100);
+    }
+
+    // Restart button
+    restartBtn.addEventListener('click', () => {
+      if (moveTimeoutId) clearTimeout(moveTimeoutId);
+      if (timerIntervalId) clearInterval(timerIntervalId);
+      startGame();
+    });
+
+    // Fullscreen button
+    fsBtn.addEventListener('click', async () => {
+      try {
+        if (!document.fullscreenElement) await game.requestFullscreen();
+        else await document.exitFullscreen();
+      } catch(err) {
+        console.warn('Fullscreen not supported', err);
+      }
+    });
+
+    // Attach event listeners
+    alfajor.addEventListener('click', onCatch);
+    // also support touch on mobile large hit area
+    alfajor.addEventListener('touchstart', function(e){ e.preventDefault(); onCatch(e); }, {passive:false});
+
+    // Start the game automatically on first user interaction (to allow audio play in some browsers)
+    function onFirstInteraction() {
+      document.removeEventListener('click', onFirstInteraction);
+      document.removeEventListener('touchstart', onFirstInteraction);
+      startGame();
+    }
+    document.addEventListener('click', onFirstInteraction);
+    document.addEventListener('touchstart', onFirstInteraction, {passive:true});
+
+    // Initial placement so parseInt won't return NaN anywhere
+    (function initPlacement(){
+      const pos = randomPosition();
+      alfajor.style.left = pos.x + 'px';
+      alfajor.style.top = pos.y + 'px';
+    })();
+  </script>
 </body>
 </html>
